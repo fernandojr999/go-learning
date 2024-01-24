@@ -8,12 +8,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
-	"golang.org/x/crypto/bcrypt"
-	"github.com/fernandojr999/go-learning/domain"
+	"github.com/fernandojr999/go-learning/delivery"
 	"github.com/fernandojr999/go-learning/repository"
 	"github.com/fernandojr999/go-learning/usecase"
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 const (
