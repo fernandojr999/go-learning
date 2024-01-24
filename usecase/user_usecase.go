@@ -45,3 +45,7 @@ func (u *UserUsecase) AuthenticateUser(inputUser *domain.User) error {
 
 	return nil
 }
+
+func (u *UserUsecase) GetAllUsers() ([]domain.User, error) {
+	return u.userRepository.GetAllUsers()
+}

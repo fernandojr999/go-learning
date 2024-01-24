@@ -60,6 +60,7 @@ func main() {
 	userHandler := delivery.NewUserHandler(userUsecase)
 	r.HandleFunc("/api/user/register", userHandler.CreateUser).Methods("POST")
 	r.HandleFunc("/api/user/authenticate", userHandler.AuthenticateUser).Methods("POST")
+	r.HandleFunc("/api/user/all", userHandler.GetAllUsers).Methods("GET")
 
 	// Iniciar o servidor
 	serverAddr := "localhost:8080"

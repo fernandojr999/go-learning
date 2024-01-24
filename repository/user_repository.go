@@ -3,6 +3,7 @@ package repository
 
 import (
 	"database/sql"
+
 	"github.com/fernandojr999/go-learning/domain"
 )
 
@@ -10,6 +11,7 @@ import (
 type UserRepository interface {
 	CreateUser(user *domain.User) error
 	GetUserByUsername(username string) (*domain.User, error)
+	GetAllUsers() ([]domain.User, error)
 }
 
 // userRepo implementa a interface UserRepository
@@ -35,4 +37,24 @@ func (r *userRepo) GetUserByUsername(username string) (*domain.User, error) {
 	var user domain.User
 	err := r.db.QueryRow("SELECT id, username, password FROM users WHERE username = $1", username).Scan(&user.ID, &user.Username, &user.Password)
 	return &user, err
+}
+
+func (r *userRepo) GetAllUsers() ([]domain.User, error) {
+	rows, err := r.db.Query("SELECT id, username, password FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []domain.User
+
+	for rows.Next() {
+		var user domain.User
+		if err := rows.Scan(&user.ID, &user.Username, &user.Password); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
