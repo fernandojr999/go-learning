@@ -63,7 +63,7 @@ func main() {
 	r.HandleFunc("/api/user/all", userHandler.GetAllUsers).Methods("GET")
 
 	// Iniciar o servidor
-	serverAddr := "localhost:8080"
+	serverAddr := "localhost:8081"
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         serverAddr,
