@@ -42,25 +42,42 @@ func main() {
 	}
 
 	// Criar tabela de usuários se não existir
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+	_, err = db.Exec(`
+					CREATE TABLE IF NOT EXISTS users (
 						id SERIAL PRIMARY KEY,
 						username VARCHAR(50) UNIQUE NOT NULL,
 						password VARCHAR(100) NOT NULL
-					)`)
+					);
+					
+					CREATE TABLE IF NOT EXISTS messages (
+						id SERIAL PRIMARY KEY,
+						user_id INT NOT NULL,
+						message TEXT NOT NULL,
+						to_id INT NOT NULL
+					);
+
+					`)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	userRepository := repository.NewUserRepository(db)
+	messageRepository := repository.NewMessageRepository(db)
+
 	userUsecase := usecase.NewUserUsecase(userRepository)
+	messageUsecase := usecase.NewMessageUsecase(messageRepository)
 
 	r := mux.NewRouter()
 
 	// Handlers
 	userHandler := delivery.NewUserHandler(userUsecase)
+	messageHandler := delivery.NewMessageHandler(messageUsecase)
 	r.HandleFunc("/api/user/register", userHandler.CreateUser).Methods("POST")
 	r.HandleFunc("/api/user/authenticate", userHandler.AuthenticateUser).Methods("POST")
 	r.HandleFunc("/api/user/all", userHandler.GetAllUsers).Methods("GET")
+
+	r.HandleFunc("/api/message/send", messageHandler.SendMessage).Methods("POST")
 
 	// Iniciar o servidor
 	serverAddr := "localhost:8081"
